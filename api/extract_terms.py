@@ -27,4 +27,5 @@ def extract_terms():
     )
 
     result = response.choices[0].message.content
-    return jsonify({"terms_and_definitions": result})
+    #return jsonify({"terms_and_definitions": result})
+    return "hi"
