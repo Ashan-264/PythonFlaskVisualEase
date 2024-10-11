@@ -16,7 +16,7 @@
         "dest": "api/extract_terms.py"
       },
       {
-        "src": "/api/generate-image",
+        "src": "/api/image_generator",
         "dest": "api/image_generator.py"
       },
       {

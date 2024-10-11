@@ -14,7 +14,7 @@ save_directory = "generated_images"
 if not os.path.exists(save_directory):
     os.makedirs(save_directory)
 
-@app.route('/api/generate-image', methods=['POST'])
+@app.route('/api/image_generator', methods=['POST'])
 def generate_image():
     data = request.json
     prompt = data.get('textPart')
