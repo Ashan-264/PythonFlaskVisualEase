@@ -3,7 +3,7 @@ from flask_cors import CORS
 from gradio_client import Client
 import shutil
 import os
-
+#image_generator
 app = Flask(__name__)
 CORS(app)
 
