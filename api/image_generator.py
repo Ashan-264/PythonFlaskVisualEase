@@ -10,7 +10,8 @@ CORS(app)
 hf_token = os.getenv("HF_TOKEN")
 client = Client("black-forest-labs/FLUX.1-schnell", hf_token=hf_token)
 
-save_directory = "generated_images"
+# Use a temporary directory provided by Vercel for writable operations.
+save_directory = "/tmp/generated_images"
 if not os.path.exists(save_directory):
     os.makedirs(save_directory)
 
