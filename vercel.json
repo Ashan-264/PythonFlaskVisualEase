@@ -2,14 +2,22 @@
     "version": 2,
     "builds": [
       {
-        "src": "api/**/*.py",
+        "src": "api/extract_terms.py",
+        "use": "@vercel/python"
+      },
+      {
+        "src": "api/image_generator.py",
         "use": "@vercel/python"
       }
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
-        "dest": "api/$1"
+        "src": "/(.*)",
+        "dest": "api/extract_terms.py"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "api/image_generator.py"
       }
     ]
   }
