@@ -13,7 +13,7 @@ CORS(app)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=GROQ_API_KEY)
 
-@app.route('/api/extract_terms', methods=['POST'])
+@app.route('/api/extract_terms')#, methods=['POST']
 def extract_terms():
     data = request.json
     text = data.get('text')
