@@ -1,4 +1,3 @@
-# File: api/extract_terms.py
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from groq import Groq
@@ -28,4 +27,3 @@ def extract_terms():
 
     result = response.choices[0].message.content
     return jsonify({"terms_and_definitions": result})
-

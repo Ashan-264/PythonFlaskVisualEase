@@ -8,8 +8,16 @@
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
-        "dest": "api/$1"
+        "src": "/api/extract_terms",
+        "dest": "api/extract_terms.py"
+      },
+      {
+        "src": "/api/generate-image",
+        "dest": "api/image_generator.py"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "main.py"
       }
     ]
   }

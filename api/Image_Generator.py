@@ -1,4 +1,3 @@
-# File: api/image_generator.py
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from gradio_client import Client
@@ -19,7 +18,7 @@ if not os.path.exists(save_directory):
 def generate_image():
     data = request.json
     prompt = data.get('textPart')
-    
+
     if not prompt:
         return jsonify({'error': 'Prompt is required'}), 400
 
@@ -46,4 +45,3 @@ def generate_image():
 @app.route('/api/generated_images/<filename>')
 def send_image(filename):
     return send_from_directory(save_directory, filename)
-
