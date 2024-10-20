@@ -1,31 +1,28 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from gradio_client import Client
-import shutil
 import os
 import requests
+from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS from Flask-CORS
+from gradio_client import Client
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()  # This ensures the .env file is loaded
+# Load environment variables from .env
+load_dotenv()
 
-# Verify that the tokens are loaded (for debugging purposes)
-print(f"GROQ_API_KEY: {os.getenv('GROQ_API_KEY')}")
-print(f"HF_TOKEN: {os.getenv('HF_TOKEN')}")
-print(f"BLOB_READ_WRITE_TOKEN: {os.getenv('BLOB_READ_WRITE_TOKEN')}")
-
+# Initialize Flask app
 app = Flask(__name__)
-CORS(app)
 
-# Setup client for the Huggingface model
+# Enable CORS for all origins
+CORS(app)  # This allows any origin to make requests
+
+# Setup Huggingface client
 hf_token = os.getenv("HF_TOKEN")
 client = Client("black-forest-labs/FLUX.1-schnell", hf_token=hf_token)
 
-save_directory = "/tmp/generated_images"
-if not os.path.exists(save_directory):
-    os.makedirs(save_directory)
+BLOB_RW_TOKEN = os.getenv("BLOB_RW_TOKEN")
 
-BLOB_RW_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN")
+# Ensure temporary directory exists for generated images
+save_directory = "/tmp/generated_images"
+os.makedirs(save_directory, exist_ok=True)
 
 @app.route('/api/image_generator', methods=['POST'])
 def generate_image():
@@ -36,6 +33,7 @@ def generate_image():
         return jsonify({'error': 'Prompt is required'}), 400
 
     try:
+        # Generate the image with Huggingface API
         result = client.predict(
             prompt=prompt,
             seed=0,
@@ -48,7 +46,7 @@ def generate_image():
 
         webp_image_path, _ = result
 
-        # Upload the WebP image directly to Vercel Blob
+        # Upload the WebP image to Vercel Blob Storage
         with open(webp_image_path, "rb") as img_file:
             response = requests.put(
                 "https://blob.vercel-storage.com/upload?filename=generated_image.webp",
@@ -59,18 +57,26 @@ def generate_image():
                 data=img_file
             )
 
+        # Log the response for debugging
+        print(f"Blob Upload Response: {response.json()}")
+
         if response.status_code != 200:
             return jsonify({
                 'error': 'Failed to upload image to Vercel Blob',
                 'details': response.text
             }), 500
 
-        original_url = response.json().get("url")
-        friendly_url = original_url.replace("upload-", "generated_image-")
+        # Extract the image URL from the Blob response
+        image_url = response.json().get("url")
 
-        return jsonify({'imageUrl': friendly_url})
+        if not image_url:
+            raise ValueError("Image URL not found in Blob response.")
+
+        # Return the image URL to the frontend
+        return jsonify({'imageUrl': image_url})
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
