@@ -26,7 +26,7 @@ if not hf_token:
     logging.error("HF_TOKEN is not set in environment")
 client = Client("black-forest-labs/FLUX.1-schnell", hf_token=hf_token)
 
-BLOB_RW_TOKEN = os.getenv("BLOB_RW_TOKEN")
+BLOB_RW_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN")
 if not BLOB_RW_TOKEN:
     logging.error("BLOB_RW_TOKEN is not set in environment")
 
