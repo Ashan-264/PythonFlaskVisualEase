@@ -26,9 +26,9 @@ if not hf_token:
     logging.error("HF_TOKEN is not set in environment")
 client = Client("black-forest-labs/FLUX.1-schnell", hf_token=hf_token)
 
-BLOB_RW_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN")
-if not BLOB_RW_TOKEN:
-    logging.error("BLOB_RW_TOKEN is not set in environment")
+BLOB_READ_WRITE_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN")
+if not BLOB_READ_WRITE_TOKEN:
+    logging.error("BLOB_READ_WRITE_TOKEN is not set in environment")
 
 # Ensure temporary directory exists for generated images
 save_directory = "/tmp/generated_images"
@@ -72,7 +72,7 @@ def generate_image():
             response = requests.put(
                 "https://blob.vercel-storage.com/upload?filename=generated_image.webp",
                 headers={
-                    "Authorization": f"Bearer {BLOB_RW_TOKEN}",
+                    "Authorization": f"Bearer {BLOB_READ_WRITE_TOKEN}",
                     "Content-Type": "image/webp"
                 },
                 data=img_file
